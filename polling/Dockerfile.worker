@@ -1,0 +1,16 @@
+FROM python:3.7.1
+RUN groupadd polling_worker_group && \
+    useradd -m -g polling_worker_group -s /bin/bash polling_worker && \
+    apt-get update -y && \
+    apt-get install unixodbc-dev -y && \
+    apt-get install python3-dev -y && \
+    apt-get install qtbase5-dev --assume-yes && \
+    apt-get install wkhtmltopdf --assume-yes && \
+    mkdir -p /home/polling_worker
+ENV PYTHONPATH "${PYTHONPATH}:/home/polling_worker"
+COPY . /home/polling_worker/
+RUN chown -R polling_worker:polling_worker_group /home/polling_worker && \
+    pip install -r /home/polling_worker/requirements.txt
+WORKDIR /home/polling_worker
+USER polling_worker
+CMD celery -A app worker

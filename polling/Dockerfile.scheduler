@@ -1,0 +1,13 @@
+FROM python:3.7.1
+RUN groupadd polling_scheduler_group && \
+    useradd -m -g polling_scheduler_group -s /bin/bash polling_scheduler && \
+    apt-get update -y && \
+    apt-get install python3-dev -y && \
+    mkdir -p /home/polling_scheduler
+ENV PYTHONPATH "${PYTHONPATH}:/home/polling_scheduler"
+COPY . /home/polling_scheduler/
+RUN chown -R polling_scheduler:polling_scheduler_group /home/polling_scheduler && \
+    pip install -r /home/polling_scheduler/requirements.txt
+WORKDIR /home/polling_scheduler
+USER polling_scheduler
+CMD celery -A app beat

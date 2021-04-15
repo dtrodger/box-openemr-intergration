@@ -1,0 +1,52 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">
+            <img src="file:///Users/david.rodgers/Projects/demo/polling/static/uhg_logo.png" height="60px"></imgsrc>
+        </a>
+    </nav>
+    <div class="jumbotron container-fluid text-left">
+        <h1>2019 ACC/AHA Guideline on the Primary Prevention of Cardiovascular Disease</h1>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Patient Demographics</h5>
+            <p>
+                OpenEMR ID: {{ patient_id }}<br>
+                Name: {{ fname }} {{ lname }}<br>
+                Sex: {{ sex }}<br>
+                Age: {{ age }}
+            </p>
+            <h5 class="card-title">Prevention Suggestions</h5>
+            {% if provide_recommendation %}
+            <ul>
+                <li>
+                <div>Metroprololo ER Succinate 50MG 1 tablet by mouth twice daily.</div>
+                </li>
+                    <li>
+                    <div>Asprin 80MG 1 tablet by mouth three times daily.</div>
+                </li>
+                    <li>
+                    <div>Losartan Potassium 50MG 1 tablet by mouth daily.</div>
+                </li>
+                <li>
+                    <div>A diet emphasizing intake of vegetables, fruits, legumes, nuts, whole grains, and fish is recommended to decrease ASCVD risk factors.</div>
+                </li>
+                <li>
+                    <div>As a part of a healthy diet, it is reasonable to minimize the intake of processed meats, refined carbohydrates, and sweetened beverages to reduce ASCVD risk.</div>
+                </li>
+            </ul>
+            {% else %}
+            <p>Patient age below threshold for care recommendations</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

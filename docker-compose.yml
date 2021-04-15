@@ -1,0 +1,106 @@
+version: '3.7'
+
+services:
+
+  box_web_service:
+    container_name: box_web_service-1
+    build: ./box_cds_agent
+    networks:
+      - uhg-cds
+    ports:
+      - 8080:8080
+    restart: always
+
+  polling_scheduler:
+    container_name: polling-scheduler-1
+    build:
+      context: ./polling
+      dockerfile: Dockerfile.scheduler
+    networks:
+      - uhg-cds
+    restart: always
+    depends_on:
+      - mysql
+      - openemr
+      - redis
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+# TODO - Errors calling pdfkit
+#  polling_worker:
+#    container_name: nwm-cds-polling-worker-1
+#    build:
+#      context: ./polling
+#      dockerfile: Dockerfile.worker
+#    networks:
+#      - cds
+#    restart: always
+#    depends_on:
+#      - mysql
+#      - redis
+#      - openemr
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+  redis:
+    container_name: redis-1
+    image: redis
+    networks:
+      - uhg-cds
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    restart: always
+
+  mysql:
+    container_name: mysql-1
+    image: mariadb:10.2
+    networks:
+      - uhg-cds
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - databasevolume:/var/lib/mysql
+    command: ['mysqld','--character-set-server=utf8']
+    restart: always
+
+  openemr:
+    container_name: openemr-1
+    restart: always
+    build: ./openemr
+    networks:
+      - uhg-cds
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - logvolume01:/var/log
+    - sitevolume:/var/www/localhost/htdocs/openemr/sites
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_ROOT_PASS: root
+      MYSQL_USER: openemr
+      MYSQL_PASS: openemr
+      OE_USER: admin
+      OE_PASS: pass
+    depends_on:
+    - mysql
+
+networks:
+  uhg-cds:
+    driver: "bridge"
+
+volumes:
+  logvolume01:
+  sitevolume:
+  databasevolume:
+  redis-data:
